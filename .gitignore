@@ -75,3 +75,5 @@ crashlytics-build.properties
 GGJ2021/Temp/
 GGJ2021/Library/
 java/GGJ2021/gradle/
+python/venv/
+python/.idea/
