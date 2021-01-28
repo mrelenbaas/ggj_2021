@@ -74,3 +74,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 GGJ2021/Temp/
 GGJ2021/Library/
+java/GGJ2021/gradle/
