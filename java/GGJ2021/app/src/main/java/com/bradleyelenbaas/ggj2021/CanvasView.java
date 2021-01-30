@@ -11,7 +11,7 @@ import android.view.View;
 
 public class CanvasView extends View {
 
-    private static int BOX_OFFSET = 50;
+    private static int BOX_OFFSET = 100;
     public int width;
     public int height;
     private Bitmap mBitmap;

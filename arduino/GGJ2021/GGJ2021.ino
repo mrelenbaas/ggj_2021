@@ -29,10 +29,16 @@ unsigned int localPort = 84;      // local port to listen on
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE + 1]; //buffer to hold incoming packet,
 char  ReplyBuffer[] = "acknowledged\r\n";       // a string to send back
 
+int inByte;
+String incoming;
+int pin = 2;
+bool toggle = false;
+
 WiFiUDP Udp;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(pin, OUTPUT);
   WiFi.mode(WIFI_STA);
   WiFi.begin(STASSID, STAPSK);
   while (WiFi.status() != WL_CONNECTED) {
@@ -46,31 +52,65 @@ void setup() {
 }
 
 void loop() {
-  // if there's data available, read a packet
-  int packetSize = Udp.parsePacket();
-  if (packetSize) {
-    Serial.printf("Received packet of size %d from %s:%d\n    (to %s:%d, free heap = %d B)\n",
-                  packetSize,
-                  Udp.remoteIP().toString().c_str(), Udp.remotePort(),
-                  Udp.destinationIP().toString().c_str(), Udp.localPort(),
-                  ESP.getFreeHeap());
+  /*
+  if (toggle) {
+    digitalWrite(pin, HIGH);
+    Serial.println("HIGH");
+  } else {
+    digitalWrite(pin, LOW);
+    Serial.println("LOW");
+  }
+  toggle = !toggle;
+  delay(100);
+  */
+  
+  // if we get a valid byte, read analog ins:
+  if (Serial.available() > 0) {
+    // get incoming byte:
+    incoming = Serial.readString();
+    Serial.println(incoming);
 
-    // read the packet into packetBufffer
-    int n = Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-    packetBuffer[n] = 0;
-    Serial.println("Contents:");
-    Serial.println(packetBuffer);
-
-    // send a reply, to the IP address and port that sent us the packet we received
-    Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+    delay(500);
+    //Serial.println("message");
+    
+    // if there's data available, read a packet
+    int packetSize = Udp.parsePacket();
+    if (packetSize) {
+      Serial.printf("Received packet of size %d from %s:%d\n    (to %s:%d, free heap = %d B)\n",
+                    packetSize,
+                    Udp.remoteIP().toString().c_str(), Udp.remotePort(),
+                    Udp.destinationIP().toString().c_str(), Udp.localPort(),
+                    ESP.getFreeHeap());
+  
+      // read the packet into packetBufffer
+      int n = Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+      packetBuffer[n] = 0;
+      //Serial.println("Contents:");
+      //Serial.println(packetBuffer);
+  
+      // send a reply, to the IP address and port that sent us the packet we received
+      Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+      Udp.write(ReplyBuffer);
+      Udp.endPacket();
+    }
+  
+    Udp.beginPacket("192.168.1.6", 80);
     Udp.write(ReplyBuffer);
     Udp.endPacket();
   }
-
-  Udp.beginPacket("192.168.1.7", 80);
-  Udp.write(ReplyBuffer);
-  Udp.endPacket();
 }
+
+/*
+void blink_it(int the_count){
+  for (int ii=0;ii<the_count;ii++){
+
+     digitalWrite(pin, HIGH);
+     delay(150);
+     digitalWrite(pin, LOW);
+     delay(150);
+  }
+}
+*/
 
 /*
   test (shell/netcat):
