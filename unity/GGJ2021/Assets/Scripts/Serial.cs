@@ -7,6 +7,7 @@ using UnityEngine;
 public class Serial : MonoBehaviour
 {
     public Finger finger;
+    public Finger pythonFinger;
 
     SerialPort sp;
     float next_time; int ii = 0;
@@ -39,11 +40,20 @@ public class Serial : MonoBehaviour
         StartCoroutine
         (
             AsynchronousReadFromArduino
-            ((string s) => Debug.Log(s),     // Callback
+            ((string s) => MyCallback(s),     // Callback
                 () => Debug.LogError("Error!"), // Error callback
                 1000f                          // Timeout (milliseconds)
             )
         );
+    }
+
+    private void MyCallback(string s)
+    {
+        //print("<<< " + s);
+        string[] splitArray = s.Split(char.Parse(","));
+        //print(splitArray[0]);
+        //print(splitArray[1]);
+        pythonFinger.setPosition(float.Parse(splitArray[0]), float.Parse(splitArray[1]));
     }
 
     // Update is called once per frame
@@ -58,11 +68,11 @@ public class Serial : MonoBehaviour
             }
             if (sp.IsOpen)
             {
-                print("Writing " + ii);
+                //print("Writing " + ii);
                 //sp.Write((ii.ToString()));
-                sp.Write("something else");
-                print("x: " + finger.GetWidthPercentage());
-                print("z: " + finger.GetHeightPercentage());
+                string message = "" + finger.GetWidthPercentage() + "," + finger.GetHeightPercentage();
+                sp.Write(message);
+                //print(">>> " + message);
             }
             next_time = Time.time + 1;
             if (++ii > 9) ii = 0;
@@ -99,7 +109,7 @@ public class Serial : MonoBehaviour
             try
             {
                 dataString = sp.ReadLine();
-                //print(dataString);
+                //print("<<< " + dataString);
             }
             catch (TimeoutException)
             {
@@ -110,16 +120,14 @@ public class Serial : MonoBehaviour
             {
                 callback(dataString);
 
-                /*
                 StartCoroutine
                 (
                     AsynchronousReadFromArduino
-                    ((string s) => Debug.Log(s),     // Callback
+                    ((string s) => MyCallback(s),     // Callback
                         () => Debug.LogError("Error!"), // Error callback
-                        10000f                          // Timeout (milliseconds)
+                        1000f                          // Timeout (milliseconds)
                     )
                 );
-                */
                 yield break; // Terminates the Coroutine
             }
             else

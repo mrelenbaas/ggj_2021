@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
     private CanvasView customCanvas;
 
-    final String message = "Hello!";
-    final String IPAdress = "192.168.1.7";
+    final String message = "0.0,0.0";
+    final String IPAdress = "192.168.1.6";
 
     Button button;
 

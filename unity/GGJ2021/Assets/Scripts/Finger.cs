@@ -6,9 +6,10 @@ public class Finger : MonoBehaviour
 {
     private const float SPEED = 20f;
     private const float SIZE = 19.5f;
-    private const float FLOOR = 1.5f;
+    private float floor = 1.5f;
     private const float OFFSET = 2f;
 
+    public bool isLocal = true;
     public Transform top;
     public Transform bottom;
     public Transform left;
@@ -18,6 +19,9 @@ public class Finger : MonoBehaviour
     private MeshRenderer bottomMR;
     private MeshRenderer leftMR;
     private MeshRenderer rightMR;
+
+    private float pythonX = 0.0f;
+    private float pythonY = 0.0f;
 
     public float GetWidthPercentage()
     {
@@ -29,20 +33,41 @@ public class Finger : MonoBehaviour
         return transform.position.z / SIZE;
     }
 
+    public void setPosition(float widthPercentage, float heightPercentage)
+    {
+        pythonX = -SIZE + ((SIZE * 2) * widthPercentage);
+        pythonY = SIZE - ((SIZE * 2) * heightPercentage);
+        print("python " + pythonX + ", " + pythonY);
+    }
+
     void Start()
     {
         topMR = top.GetComponent<MeshRenderer>();
         bottomMR = bottom.GetComponent<MeshRenderer>();
         leftMR = left.GetComponent<MeshRenderer>();
         rightMR = right.GetComponent<MeshRenderer>();
+        if (!isLocal)
+        {
+            floor += 1.5f;
+        }
     }
 
     void Update()
     {
         Vector3 moveDir = Vector3.zero;
-        moveDir.x = Input.GetAxis("Horizontal");
-        moveDir.z = Input.GetAxis("Vertical");
-        transform.position += moveDir * SPEED * Time.deltaTime;
+        if (isLocal)
+        {
+            moveDir.x = Input.GetAxis("Horizontal");
+            moveDir.z = Input.GetAxis("Vertical");
+            transform.position += moveDir * SPEED * Time.deltaTime;
+        }
+        else
+        {
+            //moveDir.x = pythonX;
+            //moveDir.z = pythonY;
+            transform.position = new Vector3(pythonX, transform.position.y, pythonY);
+        }
+        //transform.position += moveDir * SPEED * Time.deltaTime;
         transform.position = new Vector3(
             Mathf.Clamp(transform.position.x, -SIZE, SIZE),
             transform.position.y,
@@ -56,14 +81,14 @@ public class Finger : MonoBehaviour
         );
         top.position = new Vector3(
             top.position.x,
-            FLOOR,
+            floor,
             SIZE - ((SIZE - transform.position.z) / 2f) + 0.5f + OFFSET
         );
         if (top.localPosition.z >= 20f)
         {
             top.position = new Vector3(
                 top.position.x,
-                FLOOR,
+                floor,
                 SIZE + 0.5f
             );
             topMR.enabled = false;
@@ -80,14 +105,14 @@ public class Finger : MonoBehaviour
         );
         bottom.position = new Vector3(
             bottom.position.x,
-            FLOOR,
+            floor,
             transform.position.z - ((SIZE + transform.position.z) / 2f) - 0.5f - OFFSET
         );
         if (bottom.localPosition.z < -20f)
         {
             bottom.position = new Vector3(
                 bottom.position.x,
-                FLOOR,
+                floor,
                 -SIZE - 0.5f
             );
             bottomMR.enabled = false;
@@ -104,14 +129,14 @@ public class Finger : MonoBehaviour
         );
         left.position = new Vector3(
             transform.position.x - ((SIZE + transform.position.x) / 2f) - 0.5f - OFFSET,
-            FLOOR,
+            floor,
             left.position.z
         );
         if (left.localPosition.x < -20f)
         {
             left.position = new Vector3(
                 -SIZE - 0.5f,
-                FLOOR,
+                floor,
                 left.position.z
             );
             leftMR.enabled = false;
@@ -128,14 +153,14 @@ public class Finger : MonoBehaviour
         );
         right.position = new Vector3(
             SIZE - ((SIZE - transform.position.x) / 2f) + 0.5f + OFFSET,
-            FLOOR,
+            floor,
             right.position.z
         );
         if (right.localPosition.x > 20f)
         {
             right.position = new Vector3(
                 SIZE + 0.5f,
-                FLOOR,
+                floor,
                 right.position.z
             );
             rightMR.enabled = false;
