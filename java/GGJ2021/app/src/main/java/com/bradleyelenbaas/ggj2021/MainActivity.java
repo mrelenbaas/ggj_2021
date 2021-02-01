@@ -20,10 +20,11 @@ public class MainActivity extends AppCompatActivity {
 
     private CanvasView customCanvas;
 
-    final String message = "0.0,0.0";
-    final String IPAdress = "192.168.1.6";
+    String message = "0.0,0.0";
+    final String IPAdress = "192.168.1.70";
 
     Button button;
+    int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +33,17 @@ public class MainActivity extends AppCompatActivity {
 
         customCanvas = (CanvasView) findViewById(R.id.signature_canvas);
 
-        /*
         button = findViewById(R.id.button);
+        button.setTextColor(Color.BLACK);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MessageSender messageSender = new MessageSender();
                 messageSender.execute();
+                //button.setText("counter: " + counter++);
             }
         });
         button.setBackgroundColor(Color.WHITE);
-        */
 
         startServerSocket();
     }
@@ -72,14 +73,21 @@ public class MainActivity extends AppCompatActivity {
                     if (stringData.contains("on"))
                     {
                         button.setBackgroundColor(Color.RED);
+                        message = "on";
                     }
                     else if (stringData.contains("off"))
                     {
                         button.setBackgroundColor(Color.WHITE);
+                        message = "off";
                     }
                     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                     stringData = stringData + " " + currentDateTimeString;
+                    //button.setText(stringData);
                     Log.d("SOMETHING", stringData);
+
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+
                     //updateUI(stringData);
 
                     //String msgToSender = "Bye Bye ";
@@ -117,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         serverPort
                 );
                 s.send(d);
+                //Log.d("SOMETHING", "" + d);
             } catch (Exception e) {
                 System.err.println(e);
                 e.printStackTrace();
