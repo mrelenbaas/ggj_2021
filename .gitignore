@@ -77,3 +77,6 @@ GGJ2021/Library/
 java/GGJ2021/gradle/
 python/venv/
 python/.idea/
+unity/GGJ2021/Temp/
+unity/GGJ2021/Library/Artifacts/
+unity/GGJ2021/Library/EditorInstance.json

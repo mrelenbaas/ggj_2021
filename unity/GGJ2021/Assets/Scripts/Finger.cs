@@ -23,6 +23,15 @@ public class Finger : MonoBehaviour
     private float pythonX = 0.0f;
     private float pythonY = 0.0f;
 
+    private float x;
+    private float width;
+    private float xPercent;
+    private float xPosition;
+    private float y;
+    private float height;
+    private float yPercent;
+    private float yPosition;
+
     public float GetWidthPercentage()
     {
         return transform.position.x / SIZE;
@@ -73,6 +82,27 @@ public class Finger : MonoBehaviour
             transform.position.y,
             Mathf.Clamp(transform.position.z, -SIZE, SIZE)
         );
+
+        x = Input.mousePosition.x;
+        width = Screen.width;
+        xPercent = Mathf.Clamp(x / width, 0.0f, 1.0f);
+        xPosition = -SIZE + (SIZE * 2f * xPercent);
+        y = Input.mousePosition.y;
+        height = Screen.height;
+        yPercent = Mathf.Clamp(y / height, 0.0f, 1.0f);
+        yPosition = -SIZE + (SIZE * 2f * yPercent);
+        if (isLocal)
+        {
+            transform.position = new Vector3(
+                Mathf.Clamp(xPosition, -SIZE, SIZE),
+                transform.position.y,
+                Mathf.Clamp(yPosition, -SIZE, SIZE)
+            );
+        }
+        else
+        {
+            // Android.
+        }
 
         top.localScale = new Vector3(
             40f,
@@ -171,15 +201,9 @@ public class Finger : MonoBehaviour
         }
     }
 
-    //private void OnGUI()
-    //{
-        //string label = "" + transform.position;
-        //GUI.Label(new Rect(10, 10, 140, 20), label);
-        /*
-        if (GUI.Button(new Rect(10, 10, 150, 100), "I am a button."))
-        {
-            print("You clicked a button.");
-        }
-        */
-    //}
+    private void OnGUI()
+    {
+        string label = "" + x + " / " + width + " = " + xPercent;
+        GUI.Label(new Rect(300, 300, 400, 20), label);
+    }
 }
