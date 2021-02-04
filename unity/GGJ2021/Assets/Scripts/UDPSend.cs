@@ -26,7 +26,7 @@ public class UDPSend : MonoBehaviour
     private static int localPort;
 
     // prefs
-    private string IP = "192.168.1.76";  // define in init
+    private string IP = "192.168.1.8";  // define in init
     private int port = 50007;  // define in init
 
     // "connection" things

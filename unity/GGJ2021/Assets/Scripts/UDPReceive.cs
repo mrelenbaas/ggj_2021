@@ -32,8 +32,8 @@ public class UDPReceive : MonoBehaviour
     UdpClient client;
 
     // public
-    private string IP = "192.168.1.76";
-    private int port = 80;
+    private string IP = "192.168.1.8";
+    private int port = 50007;
 
     // infos
     private string lastReceivedUDPPacket = "";
@@ -96,10 +96,12 @@ public class UDPReceive : MonoBehaviour
         {
             try
             {
+                print("HERE");
                 // Bytes empfangen.
-                IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
+                IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 50007);
+                print("0");
                 byte[] data = client.Receive(ref anyIP);
-
+                print("1");
                 // Bytes mit der UTF8-Kodierung in das Textformat kodieren.
                 string text = Encoding.UTF8.GetString(data);
 
@@ -116,6 +118,9 @@ public class UDPReceive : MonoBehaviour
             catch (Exception err)
             {
                 print(err.ToString());
+                //receiveThread = new Thread(new ThreadStart(ReceiveData));
+                //receiveThread.IsBackground = true;
+                //receiveThread.Start();
             }
         }
     }

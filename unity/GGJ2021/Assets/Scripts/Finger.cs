@@ -55,7 +55,7 @@ public class Finger : MonoBehaviour
         bottomMR = bottom.GetComponent<MeshRenderer>();
         leftMR = left.GetComponent<MeshRenderer>();
         rightMR = right.GetComponent<MeshRenderer>();
-        if (!isLocal)
+        if (isLocal)
         {
             floor += 1.5f;
         }
