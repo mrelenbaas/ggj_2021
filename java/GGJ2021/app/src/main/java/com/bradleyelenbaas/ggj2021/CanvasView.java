@@ -8,6 +8,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class CanvasView extends View {
 
@@ -22,6 +24,9 @@ public class CanvasView extends View {
     private float mX, mY;
     private static final float TOLERANCE = 5;
 
+    //private Timer mTimer;
+    //Button button;
+
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
@@ -32,6 +37,9 @@ public class CanvasView extends View {
         mPaintCloud.setAntiAlias(true);
         mPaintCloud.setColor(Color.BLACK);
         mPaintCloud.setStyle(Paint.Style.FILL);
+
+        //mTimer = new Timer();
+        //button = findViewById(R.id.button);
     }
 
     @Override
@@ -45,6 +53,9 @@ public class CanvasView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        //if (mTimer.updater()) {
+        //    button.setText("---");
+        //}
         canvas.drawRect(
                 0,
                 0,

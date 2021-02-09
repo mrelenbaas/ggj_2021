@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,10 +21,15 @@ public class MainActivity extends AppCompatActivity {
 
     private CanvasView customCanvas;
 
-    String message = "0.0,0.0";
+    String message = "android,up";
     final String IPAdress = "192.168.1.70";
+    byte[] msg = new byte[1000];
 
-    Button button;
+    Button buttonUp;
+    Button buttonDown;
+    Button buttonLeft;
+    Button buttonRight;
+    Button buttonStop;
     int counter = 0;
 
     @Override
@@ -31,19 +37,70 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        customCanvas = (CanvasView) findViewById(R.id.signature_canvas);
-
-        button = findViewById(R.id.button);
-        button.setTextColor(Color.BLACK);
-        button.setOnClickListener(new View.OnClickListener() {
+        buttonUp = findViewById(R.id.button_up);
+        buttonUp.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                MessageSender messageSender = new MessageSender();
-                messageSender.execute();
-                //button.setText("counter: " + counter++);
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    message = "android,up";
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    message = "";
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+                }
+                return true;
             }
         });
-        button.setBackgroundColor(Color.WHITE);
+        buttonDown = findViewById(R.id.button_down);
+        buttonDown.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    message = "android,down";
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    message = "";
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+                }
+                return true;
+            }
+        });
+        buttonLeft = findViewById(R.id.button_left);
+        buttonLeft.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    message = "android,left";
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    message = "";
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+                }
+                return true;
+            }
+        });
+        buttonRight = findViewById(R.id.button_right);
+        buttonRight.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    message = "android,right";
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    message = "";
+                    MessageSender messageSender = new MessageSender();
+                    messageSender.execute();
+                }
+                return true;
+            }
+        });
 
         startServerSocket();
     }
@@ -60,40 +117,26 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-
-                byte[] msg = new byte[1000];
+                //byte[] msg = new byte[1000];
                 DatagramPacket dp = new DatagramPacket(msg, msg.length);
                 DatagramSocket ds = null;
                 try {
                     ds = new DatagramSocket(50007);
-                    //ds.setSoTimeout(50000);
                     ds.receive(dp);
-
                     stringData = new String(msg, 0, dp.getLength());
-                    if (stringData.contains("on"))
-                    {
+                    /*
+                    if (stringData.contains("on")) {
                         button.setBackgroundColor(Color.RED);
                         message = "on";
-                    }
-                    else if (stringData.contains("off"))
-                    {
+                    } else if (stringData.contains("off")) {
                         button.setBackgroundColor(Color.WHITE);
                         message = "off";
                     }
+                    */
                     String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                     stringData = stringData + " " + currentDateTimeString;
-                    //button.setText(stringData);
-                    Log.d("SOMETHING", stringData);
-
                     MessageSender messageSender = new MessageSender();
                     messageSender.execute();
-
-                    //updateUI(stringData);
-
-                    //String msgToSender = "Bye Bye ";
-                    //dp = new DatagramPacket(msgToSender.getBytes(), msgToSender.length(), dp.getAddress(), dp.getPort());
-                    //ds.send(dp);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -103,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-
         });
         thread.start();
     }
@@ -112,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... voids) {
 
-            int serverPort = 80;
+            int serverPort = 50007;
 
             try {
                 DatagramSocket s = new DatagramSocket();
