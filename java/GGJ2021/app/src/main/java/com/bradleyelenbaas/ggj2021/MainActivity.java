@@ -2,10 +2,8 @@ package com.bradleyelenbaas.ggj2021;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -22,14 +20,13 @@ public class MainActivity extends AppCompatActivity {
     private CanvasView customCanvas;
 
     String message = "android,up";
-    final String IPAdress = "192.168.1.70";
+    private final String IP_ADDRESS = "255.255.255.255";
     byte[] msg = new byte[1000];
 
     Button buttonUp;
     Button buttonDown;
     Button buttonLeft;
     Button buttonRight;
-    Button buttonStop;
     int counter = 0;
 
     @Override
@@ -38,71 +35,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         buttonUp = findViewById(R.id.button_up);
-        buttonUp.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    message = "android,up";
-                    MessageSender messageSender = new MessageSender();
-                    messageSender.execute();
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    message = "";
-                    MessageSender messageSender = new MessageSender();
-                    messageSender.execute();
-                }
-                return true;
+        buttonUp.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Send("android,up");
             }
         });
         buttonDown = findViewById(R.id.button_down);
-        buttonDown.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    message = "android,down";
-                    MessageSender messageSender = new MessageSender();
-                    messageSender.execute();
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    message = "";
-                    MessageSender messageSender = new MessageSender();
-                    messageSender.execute();
-                }
-                return true;
+        buttonDown.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Send("android,down");
             }
         });
         buttonLeft = findViewById(R.id.button_left);
-        buttonLeft.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    message = "android,left";
-                    MessageSender messageSender = new MessageSender();
-                    messageSender.execute();
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    message = "";
-                    MessageSender messageSender = new MessageSender();
-                    messageSender.execute();
-                }
-                return true;
+        buttonLeft.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Send("android,left");
             }
         });
         buttonRight = findViewById(R.id.button_right);
-        buttonRight.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    message = "android,right";
-                    MessageSender messageSender = new MessageSender();
-                    messageSender.execute();
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    message = "";
-                    MessageSender messageSender = new MessageSender();
-                    messageSender.execute();
-                }
-                return true;
+        buttonRight.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Send("android,right");
             }
         });
-
         startServerSocket();
+    }
+
+    private void Send(String message) {
+        this.message = message;
+        MessageSender messageSender = new MessageSender();
+        messageSender.execute();
     }
 
     public void clearCanvas(View v) {
@@ -158,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 DatagramSocket s = new DatagramSocket();
-                InetAddress inetAddress = InetAddress.getByName(IPAdress);
+                InetAddress inetAddress = InetAddress.getByName(IP_ADDRESS);
                 byte[] tempMessage = message.getBytes();
                 DatagramPacket d = new DatagramPacket(
                         tempMessage,
